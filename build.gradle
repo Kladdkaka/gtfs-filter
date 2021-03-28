@@ -11,6 +11,8 @@ jar {
                 'Main-Class': 'com.github.kladdkaka.gtfs.filter.GtfsFilter'
         )
     }
+    
+    archiveFileName = "gtfs-filter.jar"
 
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
