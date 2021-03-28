@@ -83,73 +83,26 @@ public class GtfsFilter {
         }
     }
 
-
     public static void handleFeedInfo(Path inputPath, Path outputPath) throws IOException {
-        CsvParserSettings settings = getParserSettings();
-
-        settings.excludeFields("conv_rev", "plan_rev");
-
-        CsvParser parser = new CsvParser(settings);
-        parser.beginParsing(Files.newInputStream(inputPath));
-
-        CsvWriter writer = createWriter(outputPath);
-
-        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
-
-        Record record;
-        while ((record = parser.parseNextRecord()) != null) {
-            writer.writeRecord(record);
-        }
-
-        writer.close();
+        handleWithFieldExclusion(inputPath, outputPath, "conv_rev", "plan_rev");
     }
 
     private static void handleStops(Path inputPath, Path outputPath) throws IOException {
-        CsvParserSettings settings = getParserSettings();
-
-        settings.excludeFields("platform_code");
-
-        CsvParser parser = new CsvParser(settings);
-        parser.beginParsing(Files.newInputStream(inputPath));
-
-        CsvWriter writer = createWriter(outputPath);
-
-        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
-
-        Record record;
-        while ((record = parser.parseNextRecord()) != null) {
-            writer.writeRecord(record);
-        }
-
-        writer.close();
+        handleWithFieldExclusion(inputPath, outputPath, "platform_code");
     }
-
 
     private static void handleTransfers(Path inputPath, Path outputPath) throws IOException {
-        CsvParserSettings settings = getParserSettings();
-
-        settings.excludeFields("from_trip_id", "to_trip_id");
-
-        CsvParser parser = new CsvParser(settings);
-        parser.beginParsing(Files.newInputStream(inputPath));
-
-        CsvWriter writer = createWriter(outputPath);
-
-        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
-
-        Record record;
-        while ((record = parser.parseNextRecord()) != null) {
-            writer.writeRecord(record);
-        }
-
-        writer.close();
+        handleWithFieldExclusion(inputPath, outputPath, "from_trip_id", "to_trip_id");
     }
 
-
     private static void handleTrips(Path inputPath, Path outputPath) throws IOException {
+        handleWithFieldExclusion(inputPath, outputPath, "trip_type");
+    }
+
+    private static void handleWithFieldExclusion(Path inputPath, Path outputPath, String... fieldsToExclude) throws IOException {
         CsvParserSettings settings = getParserSettings();
 
-        settings.excludeFields("trip_type");
+        settings.excludeFields(fieldsToExclude);
 
         CsvParser parser = new CsvParser(settings);
         parser.beginParsing(Files.newInputStream(inputPath));
