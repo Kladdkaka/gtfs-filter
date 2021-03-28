@@ -24,3 +24,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew jar
+    - name: Upload fat-jar
+      uses: actions/upload-artifact@v2
+      with:
+        name: gtfs-filter.jar
+        path: build/libs/gtfs-filter.jar
