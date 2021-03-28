@@ -26,9 +26,11 @@ public class GtfsFilter {
     );
 
     public static final Map<String, CheckedBiConsumer<Path, Path, IOException>> filterHandlers = Map.of(
-            "feed_info.txt", GtfsFilter::handleFeedInfo
+            "feed_info.txt", GtfsFilter::handleFeedInfo,
+            "stops.txt", GtfsFilter::handleStops,
+            "transfers.txt", GtfsFilter::handleTransfers,
+            "trips.txt", GtfsFilter::handleTrips
     );
-
 
     public static void main(String[] args) throws IOException {
         String inputFile = args[0];
@@ -86,6 +88,68 @@ public class GtfsFilter {
         CsvParserSettings settings = getParserSettings();
 
         settings.excludeFields("conv_rev", "plan_rev");
+
+        CsvParser parser = new CsvParser(settings);
+        parser.beginParsing(Files.newInputStream(inputPath));
+
+        CsvWriter writer = createWriter(outputPath);
+
+        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
+
+        Record record;
+        while ((record = parser.parseNextRecord()) != null) {
+            writer.writeRecord(record);
+        }
+
+        writer.close();
+    }
+
+    private static void handleStops(Path inputPath, Path outputPath) throws IOException {
+        CsvParserSettings settings = getParserSettings();
+
+        settings.excludeFields("platform_code");
+
+        CsvParser parser = new CsvParser(settings);
+        parser.beginParsing(Files.newInputStream(inputPath));
+
+        CsvWriter writer = createWriter(outputPath);
+
+        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
+
+        Record record;
+        while ((record = parser.parseNextRecord()) != null) {
+            writer.writeRecord(record);
+        }
+
+        writer.close();
+    }
+
+
+    private static void handleTransfers(Path inputPath, Path outputPath) throws IOException {
+        CsvParserSettings settings = getParserSettings();
+
+        settings.excludeFields("from_trip_id", "to_trip_id");
+
+        CsvParser parser = new CsvParser(settings);
+        parser.beginParsing(Files.newInputStream(inputPath));
+
+        CsvWriter writer = createWriter(outputPath);
+
+        writer.writeHeaders(parser.getRecordMetadata().selectedHeaders());
+
+        Record record;
+        while ((record = parser.parseNextRecord()) != null) {
+            writer.writeRecord(record);
+        }
+
+        writer.close();
+    }
+
+
+    private static void handleTrips(Path inputPath, Path outputPath) throws IOException {
+        CsvParserSettings settings = getParserSettings();
+
+        settings.excludeFields("trip_type");
 
         CsvParser parser = new CsvParser(settings);
         parser.beginParsing(Files.newInputStream(inputPath));
