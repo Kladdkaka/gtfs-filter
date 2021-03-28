@@ -31,8 +31,8 @@ public class GtfsFilter {
 
 
     public static void main(String[] args) throws IOException {
-        String inputFile = args[0]; //"C:\\Users\\Xenu\\Downloads\\gtfs.zip";
-        String outputFile = args[1]; //"C:\\Users\\Xenu\\Downloads\\gtfs-out.zip";
+        String inputFile = args[0];
+        String outputFile = args[1];
 
         FileSystem fileSystem = FileSystems.newFileSystem(Path.of(inputFile));
 
